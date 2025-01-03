@@ -1,7 +1,7 @@
-
 ## All About Users Register
 
-The `/users/register` endpoint allows users to register a new account by providing their details.
+The
+ `/users/register` endpoint allows users to register a new account by providing their details.
 
 **Endpoint**
 
@@ -73,3 +73,20 @@ The `/users/register` endpoint allows users to register a new account by providi
 - Ensure all required fields are provided and meet the validation criteria.
 - The password is hashed before storing.
 - Upon successful registration, an authentication token is generated.
+
+## All About  User Login. 
+
+**Endpoint:** `/users/login`  
+**Method:** `POST`  
+**Description:** Authenticates a user and returns a JWT token.
+
+**Request Body:**
+- `email` (string, required): User's email address.
+- `password` (string, required): User's password.
+
+**Responses:**
+- **200 OK**
+  ```json
+  {
+    "token": "jwt-token"
+  }

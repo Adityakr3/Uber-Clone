@@ -14,7 +14,7 @@ app.use(express.urlencoded({extended:true}))
 
 
 
-app.get('/',(req , res)=>{
+app.get('/users',(req , res)=>{
     res.send('Hello World');
 });
 
