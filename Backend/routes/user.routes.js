@@ -15,6 +15,7 @@ router.post('/login',[
     body('password').isLength({min:8}).withMessage('password is too short'),
 ],userController.loginUser)
 
-router.get('/profile', authMiddleware.authUser,  userController.getUserProfile)
+router.get('/profile', authMiddleware.authUser,  userController.getUserProfile);
+router.get('/logout' , authMiddleware.authUser,userController.logoutUser)
 
 module.exports = router  
