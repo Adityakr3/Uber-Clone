@@ -110,6 +110,17 @@ The
 
 
 
+
+
+
+
+
+
+
+
+
+
+
 ## Profile Documentation
 Endpoint: /users/profile
 Method: GET
@@ -166,6 +177,17 @@ Notes:
 
 The endpoint returns the user's email and full name (first and last name).
 Users must be authenticated to access this endpoint.
+
+
+
+
+
+
+
+
+
+
+
 
 
 
