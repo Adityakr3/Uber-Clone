@@ -6,6 +6,7 @@ const cors = require('cors');
 const app = express();
 const connectToDb = require('./db/db');
 const userRoutes = require('./routes/user.routes');
+const captionRoutes = require('./routes/caption.routes');
 connectToDb()
 
 app.use(cors());
@@ -19,6 +20,7 @@ app.get('/users',(req , res)=>{
 });
 
 app.use('/users', userRoutes)
+app.use('/captions', captionRoutes)
 
 
 
