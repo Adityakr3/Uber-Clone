@@ -227,20 +227,7 @@ Notes:
 The token provided in the Authorization header will be invalidated upon successful logout.
 Users must be authenticated to access this endpoint.
 
-
-
-
-
-
-
-
-
-
-//....................................................................
-
-
-
-## All About Captains Register
+## Captains Register Documentation
 
 The
 `/captains/register` endpoint allows captains to register a new account by providing their details.
@@ -335,3 +322,220 @@ The
 - Ensure all required fields are provided and meet the validation criteria.
 - The password is hashed before storing.
 - Upon successful registration, an authentication token is generated.
+
+## Captains Login Documentation
+
+The `/captains/login` endpoint allows captains to log in by providing their email and password.
+
+**Endpoint**
+
+- **URL**: `/captains/login`
+- **Method**: `POST`
+- **Description**: Authenticates a captain and returns a JWT token.
+
+**Request Body**
+
+- `email` (string, required): Captain's email address.
+- `password` (string, required): Captain's password.
+
+**Example Request Body**
+
+```json
+{
+  "email": "captain@example.com",
+  "password": "securepassword123"
+}
+```
+
+**Responses**
+
+- **200 OK**
+  - **Description**: Captain authenticated successfully.
+  - **Body**:
+    ```json
+    {
+      "token": "jwt-token",
+      "captain": {
+        /* captain data */
+      }
+    }
+    ```
+
+- **400 Bad Request**
+  - **Description**: Validation errors occurred.
+  - **Body**:
+    ```json
+    {
+      "errors": [
+        { "msg": "Invalid email", "param": "email" /* additional details */ },
+        {
+          "msg": "Password must be at least 6 characters long",
+          "param": "password" /* additional details */
+        }
+      ]
+    }
+    ```
+
+- **401 Unauthorized**
+  - **Description**: Invalid email or password.
+  - **Body**:
+    ```json
+    {
+      "message": "Invalid Email or Password"
+    }
+    ```
+
+- **500 Internal Server Error**
+  - **Description**: An unexpected error occurred on the server.
+  - **Body**:
+    ```json
+    {
+      "message": "An unexpected error occurred. Please try again later."
+    }
+    ```
+
+**Notes**
+
+- Ensure all required fields are provided and meet the validation criteria.
+- Upon successful authentication, an authentication token is generated.
+
+## Captains Profile Documentation
+
+The `/captains/profile` endpoint retrieves the profile information of the currently authenticated captain.
+
+**Endpoint**
+
+- **URL**: `/captains/profile`
+- **Method**: `GET`
+- **Description**: Retrieves the profile information of the currently authenticated captain.
+
+**Request Headers**
+
+- `Authorization` (string, required): Bearer token for authentication.
+
+**Example Request**
+
+```http
+GET /captains/profile HTTP/1.1
+Host: api.example.com
+Authorization: Bearer <jwt-token>
+```
+
+**Responses**
+
+- **200 OK**
+  - **Description**: Captain profile retrieved successfully.
+  - **Body**:
+    ```json
+    {
+      "captain": {
+        "email": "captain@example.com",
+        "fullname": {
+          "firstname": "John",
+          "lastname": "Doe"
+        },
+        "vehicle": {
+          "color": "Red",
+          "plate": "XYZ123",
+          "capacity": 4,
+          "vehicleType": "car"
+        }
+      }
+    }
+    ```
+
+- **401 Unauthorized**
+  - **Description**: Invalid or missing token.
+  - **Body**:
+    ```json
+    {
+      "message": "Unauthorized: Invalid or missing token"
+    }
+    ```
+
+- **500 Internal Server Error**
+  - **Description**: An unexpected error occurred on the server.
+  - **Body**:
+    ```json
+    {
+      "message": "An unexpected error occurred. Please try again later."
+    }
+    ```
+
+**Notes**
+
+- The endpoint returns the captain's email, full name, and vehicle details.
+- Captains must be authenticated to access this endpoint.
+
+## Captains Logout Documentation
+
+The `/captains/logout` endpoint logs out the currently authenticated captain by invalidating the JWT token.
+
+**Endpoint**
+
+- **URL**: `/captains/logout`
+- **Method**: `POST`
+- **Description**: Logs out the currently authenticated captain by invalidating the JWT token.
+
+**Request Headers**
+
+- `Authorization` (string, required): Bearer token for authentication.
+
+**Example Request**
+
+```http
+POST /captains/logout HTTP/1.1
+Host: api.example.com
+Authorization: Bearer <jwt-token>
+```
+
+**Responses**
+
+- **200 OK**
+  - **Description**: Captain logged out successfully.
+  - **Body**:
+    ```json
+    {
+      "message": "Logged out successfully"
+    }
+    ```
+
+- **401 Unauthorized**
+  - **Description**: Invalid or missing token.
+  - **Body**:
+    ```json
+    {
+      "message": "Unauthorized: Invalid or missing token"
+    }
+    ```
+
+- **500 Internal Server Error**
+  - **Description**: An unexpected error occurred on the server.
+  - **Body**:
+    ```json
+    {
+      "message": "An unexpected error occurred. Please try again later."
+    }
+    ```
+
+**Notes**
+
+- The token provided in the Authorization header will be invalidated upon successful logout.
+- Captains must be authenticated to access this endpoint.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
