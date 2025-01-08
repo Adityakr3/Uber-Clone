@@ -1,4 +1,4 @@
-## All About Users Register
+##  Users Register Documentation
 
 The
 `/users/register` endpoint allows users to register a new account by providing their details.
@@ -78,7 +78,8 @@ The
 - The password is hashed before storing.
 - Upon successful registration, an authentication token is generated.
 
-## All About User Login.
+
+##  User Login Documentation
 
 
 
@@ -121,7 +122,7 @@ The
 
 
 
-## Profile Documentation
+## User Profile Documentation
 Endpoint: /users/profile
 Method: GET
 Description: Retrieves the profile information of the currently authenticated user.
@@ -129,6 +130,7 @@ Description: Retrieves the profile information of the currently authenticated us
 Request Headers:
 
 Authorization (string, required): Bearer token for authentication.
+
 Example Request:
 
 http
@@ -191,7 +193,7 @@ Users must be authenticated to access this endpoint.
 
 
 
-## Logout Documentation
+## User Logout Documentation
 Endpoint: /users/logout
 Method: POST
 Description: Logs out the currently authenticated user by invalidating the JWT token.
@@ -224,3 +226,112 @@ Notes:
 
 The token provided in the Authorization header will be invalidated upon successful logout.
 Users must be authenticated to access this endpoint.
+
+
+
+
+
+
+
+
+
+
+//....................................................................
+
+
+
+## All About Captains Register
+
+The
+`/captains/register` endpoint allows captains to register a new account by providing their details.
+
+**Endpoint**
+
+- **URL**: `/captains/register`
+- **Method**: `POST`
+- **Description**: Registers a new captain with the provided information.
+
+**Request Body**
+
+- `email` (string, required)
+  - Must be a valid email address.
+- `fullname` (object, required)
+  - `firstname` (string, required)
+    - Minimum length: 3 characters.
+  - `lastname` (string, optional)
+    - Minimum length: 3 characters (if provided).
+- `password` (string, required)
+  - Minimum length: 6 characters.
+- `vehicle` (object, required)
+  - `color` (string, required)
+    - Minimum length: 3 characters.
+  - `plate` (string, required)
+    - Minimum length: 3 characters.
+  - `capacity` (number, required)
+    - Minimum value: 1.
+  - `vehicleType` (string, required)
+    - Must be one of: `car`, `motorcycle`, `auto`.
+
+**Example Request Body**
+
+```json
+{
+  "email": "captain@example.com",
+  "fullname": {
+    "firstname": "John",
+    "lastname": "Doe"
+  },
+  "password": "securepassword123",
+  "vehicle": {
+    "color": "Red",
+    "plate": "XYZ123",
+    "capacity": 4,
+    "vehicleType": "car"
+  }
+}
+```
+
+**Responses**
+
+- **201 Created**
+
+  - **Description**: Captain registered successfully.
+  - **Body**:
+    ```json
+    {
+      "token": "<auth_token>",
+      "captain": {
+        /* captain data */
+      }
+    }
+    ```
+
+- **400 Bad Request**
+  - **Description**: Validation errors occurred.
+  - **Body**:
+    ```json
+    {
+      "errors": [
+        { "msg": "Invalid email", "param": "email" /* additional details */ },
+        {
+          "msg": "First name must be at least 3 characters long",
+          "param": "fullname.firstname" /* additional details */
+        }
+      ]
+    }
+    ```
+
+- **500 Internal Server Error**
+  - **Description**: An unexpected error occurred on the server.
+  - **Body**:
+    ```json
+    {
+      "message": "An unexpected error occurred. Please try again later."
+    }
+    ```
+
+**Notes**
+
+- Ensure all required fields are provided and meet the validation criteria.
+- The password is hashed before storing.
+- Upon successful registration, an authentication token is generated.
