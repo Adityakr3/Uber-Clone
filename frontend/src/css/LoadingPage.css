@@ -1,0 +1,73 @@
+.neon-text {
+    font-size: 12rem;
+    color: #fff;
+    text-shadow: 0 0 5px #658a917f, 0 0 15px #658a91b2, 0 0 20px #658a9163, 0 0 25px #658a91b2, 0 0 30px #658a915f;
+}
+
+
+.animated-border-box, .animated-border-box-glow{
+    position: absolute;
+    overflow: hidden; 
+    z-index: 0;
+    border-radius: 10px;
+    padding: 32px 6px; 
+  }
+  
+  .animated-border-box-glow{
+    overflow: hidden;
+    filter: blur(20px);
+  }
+  
+  .animated-border-box:before, .animated-border-box-glow:before {
+    content: '';
+    z-index: -2;
+    text-align: center;
+    top: 10%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(0deg);
+    position: absolute;
+    width: 99999px;
+    height: 99999px;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+    /*border color, change middle color*/
+    background-image: conic-gradient(rgba(0,0,0,0), #71c7f2, rgba(0,0,0,0) 25%);
+    /* change speed here */
+    animation: rotate 4s linear infinite;
+  }
+  
+  .animated-border-box:after {
+    content: '';
+    position: absolute;
+    z-index: -1;
+    left: 5px;
+    top: 5px;
+    width: calc(100% - 10px);
+    height: calc(100% - 10px);
+    /*bg color*/
+    /*box border radius*/
+    border-radius: 7px;
+  }
+  
+  @keyframes rotate {
+    100% {
+      transform: translate(-50%, -50%) rotate(1turn);
+    }
+  }
+  
+  /*// Border Animation END//*/
+  
+  
+  
+  /*// Ignore This //*/
+  body {
+    margin: 0px;
+  }
+  
+  .center-box{
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #1D1E22;
+  }
