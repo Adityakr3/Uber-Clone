@@ -1,4 +1,4 @@
-##  Users Register Documentation
+##  User Register Documentation
 
 The
 `/users/register` endpoint allows users to register a new account by providing their details.
