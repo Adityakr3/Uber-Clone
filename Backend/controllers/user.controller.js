@@ -4,7 +4,8 @@ const {validationResult} = require('express-validator')
 const BlacklistedTokenModel = require('../models/blacklistToken.model');
 
 module.exports.registerUser = async (req, res , next) => {
-   const error = validationResult(req);
+   try{
+      const error = validationResult(req);
    if(!error.isEmpty()){
     return res.status(400).json({message : error.array()})
    }
@@ -27,6 +28,12 @@ module.exports.registerUser = async (req, res , next) => {
 
    const token = user.generateAuthToken();
    res.status(201).json({message : "User created successfully", token , user});
+   }catch(error){
+      res.status(500).json({
+         success: false,
+         message: error.message
+     });
+   }
 } 
 
 module.exports.loginUser = async (req, res , next) => {
