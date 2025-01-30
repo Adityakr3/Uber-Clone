@@ -8,30 +8,89 @@ import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 const UserRegister = () => {
     const [formData, setFormData] = useState({
+        fullName: {
+            firstName: '',
+            lastName: ''
+        },
+        email: '',
+        password: ''
+    });
+    const [errors, setErrors] = useState({
         firstName: '',
         lastName: '',
         email: '',
         password: ''
     });
+
+
     const [captchaToken, setCaptchaToken] = useState(null);
     const [isChecked, setIsChecked] = useState(false);
     const navigate = useNavigate();
+    const validateField = (id, value) => {
+        let error = '';
+        switch (id) {
+            case 'firstName':
+                if (value.length <= 2) {
+                    error = `${id} is too short`;
+                }
+                break;
+            case 'lastName':
+                if (value.length < 1) {
+                    error = `${id} is too short`;
+                }
+                break;
+            case 'email':
+                if (!value.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                    error = 'please Enter a valid email';
+                }
+                break;
+            case 'password':
+                if (value.length < 6) {
+                    error = 'Password is too short (minimum 6 characters)';
+                }
+                break;
+            default:
+                break;
+        }
+        return error;
+    };
 
     const handleInputChange = (e) => {
         const { id, value } = e.target;
-        setFormData(prev => ({
-            ...prev , [id]: value
-        }))
+
+        // Validate field
+        const error = validateField(id, value);
+        setErrors(prev => ({
+            ...prev,
+            [id]: error
+        }));
+
+        // Update form data
+        if (id === 'firstName' || id === 'lastName') {
+            setFormData(prev => ({
+                ...prev,
+                fullName: {
+                    ...prev.fullName,
+                    [id]: value
+                }
+            }));
+        } else {
+            setFormData(prev => ({
+                ...prev,
+                [id]: value
+            }));
+        }
     };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
-    
+
         // Basic validation
-        if (!formData.email || !formData.password || !formData.firstName || !formData.lastName) {
+        if (!formData.fullName.firstName  || !formData.fullName.lastName || !formData.email || !formData.password) {
             toast.error("Please fill in all fields");
             return;
         }
-    
+
         // Captcha and terms validation
         if (!captchaToken) {
             toast.error("Please verify the captcha");
@@ -41,7 +100,7 @@ const UserRegister = () => {
             toast.error("Please accept the terms");
             return;
         }
-    
+
         try {
             const response = await fetch('http://localhost:4444/users/register', {
                 method: 'POST',
@@ -50,9 +109,9 @@ const UserRegister = () => {
                 },
                 body: JSON.stringify(formData)
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 toast.success("Registration successful!");
                 localStorage.setItem('token', data.token);
@@ -68,36 +127,48 @@ const UserRegister = () => {
 
     return (
         <div className='h-screen overflow-hidden text-gray-100 bg-gradient-to-t from-zinc-800 to-gray-900'>
-            <form onSubmit={handleSubmit} className="max-w-md mx-auto p-8 mt-14 rounded-lg shadow-md border-[.5px] border-zinc-500">
+            <form onSubmit={handleSubmit} className="max-w-md mx-auto px-8 py-6 mt-6 rounded-lg shadow-md border-[.5px] border-zinc-500">
                 <h2 className="text-3xl text-center font-bold mb-6">Create an account</h2>
                 <div className='flex gap-4'>
                     <div className="mb-4">
-                        <label className="block text-gray-100  text-sm font-bold mb-2" htmlFor="firstName">
+                        <label className="block text-gray-100 text-sm font-bold mb-2" htmlFor="firstName">
                             First Name*
                         </label>
                         <input
-                            value={formData.firstName}
+                            value={formData.fullName.firstName}
                             onChange={handleInputChange}
                             autoComplete="off"
-                            className="bg-transparent shadow appearance-none  rounded w-full py-2 px-3 text-gray-100 border-[.5px] border-zinc-500 leading-tight focus:outline-none focus:shadow-outline"
+                            className={`bg-transparent shadow appearance-none rounded w-full py-2 px-3 text-gray-100 border-[.5px] ${errors.firstName ? 'border-red-500' : 'border-zinc-500'
+                                } leading-tight focus:outline-none focus:shadow-outline`}
                             id="firstName"
                             type="text"
                             placeholder="First Name"
                         />
+                        {errors.firstName && (
+                            <div className='w-44 text-center'>
+                                <p className="text-red-500 font-bold text-[10px] italic mt-1">{errors.firstName}</p>
+                            </div>
+                        )}
                     </div>
                     <div className="mb-4">
                         <label className="block text-gray-100   text-sm font-bold mb-2" htmlFor="lastName">
                             Last Name*
                         </label>
                         <input
-                            value={formData.lastName}
+                            value={formData.fullName.lastName}
                             onChange={handleInputChange}
                             autoComplete="off"
-                            className=" bg-transparent shadow appearance-none border-[.5px] border-zinc-500 rounded w-full py-2 px-3 text-gray-100 leading-tight focus:outline-none focus:shadow-outline"
+                            className={`bg-transparent shadow appearance-none rounded w-full py-2 px-3 text-gray-100 border-[.5px] ${errors.lastName ? 'border-red-500' : 'border-zinc-500'
+                                } leading-tight focus:outline-none focus:shadow-outline`}
                             id="lastName"
                             type="text"
                             placeholder="Last Name"
                         />
+                        {errors.lastName && (
+                            <div className='w-44 text-center'>
+                                <p className="text-red-500 font-bold text-[10px] italic mt-1">{errors.lastName}</p>
+                            </div>
+                        )}
                     </div>
                 </div>
                 <div className="mb-4">
@@ -108,11 +179,17 @@ const UserRegister = () => {
                         value={formData.email}
                         onChange={handleInputChange}
                         autoComplete="off"
-                        className="shadow bg-transparent appearance-none border-[.5px] border-zinc-500 rounded w-full py-2 px-3 text-gray-100 leading-tight focus:outline-none focus:shadow-outline"
+                        className={`bg-transparent shadow appearance-none rounded w-full py-2 px-3 text-gray-100 border-[.5px] ${errors.email ? 'border-red-500' : 'border-zinc-500'
+                        } leading-tight focus:outline-none focus:shadow-outline`}
                         id="email"
                         type="email"
                         placeholder="Email"
                     />
+                      {errors.email && (
+                            <div className='w-44 text-start'>
+                                <p className="text-red-500 font-bold text-[10px] italic mt-1">{errors.email}</p>
+                            </div>
+                        )}
                 </div>
                 <div>
                     <label className="block text-gray-100    text-sm font-bold mb-2" htmlFor="password">
@@ -122,11 +199,17 @@ const UserRegister = () => {
                         value={formData.password}
                         onChange={handleInputChange}
                         autoComplete="off"
-                        className="bg-transparent shadow appearance-none border-[.5px] border-zinc-500 rounded w-full py-2 px-3 text-gray-100 mb-3 leading-tight focus:outline-none focus:shadow-outline"
+                        className={`bg-transparent shadow appearance-none rounded w-full py-2 px-3 text-gray-100 border-[.5px] ${errors.password ? 'border-red-500' : 'border-zinc-500'
+                        } leading-tight focus:outline-none focus:shadow-outline`}
                         id="password"
                         type="password"
                         placeholder="Password"
                     />
+                       {errors.password && (
+                            <div className='w-54 text-start'>
+                                <p className="text-red-500 font-bold text-[10px] italic mt-1">{errors.password}</p>
+                            </div>
+                        )}
                 </div>
 
                 <div className='flex items-center text-center justify-center mt-2'>
@@ -147,20 +230,18 @@ const UserRegister = () => {
                 <div className="flex items-center justify-between mt-5">
                     <button
                         type="submit"
-                        className={`${!captchaToken || !isChecked ? 'opacity-50 cursor-not-allowed' : 'opacity-100'} bg-blue-500 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-96 transition-opacity`}
-                        disabled={!captchaToken || !isChecked}
+                        className={`${!captchaToken || !isChecked || !formData.email || !formData.password ||   formData.fullName.firstName.length <= 2 || formData.fullName.lastName.length <= 1 ? 'opacity-50 cursor-not-allowed' : 'opacity-100'} bg-blue-500 hover:bg-blue-700 text-white text-center font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline w-96 transition-opacity`}
+                        disabled={!captchaToken || !isChecked || !formData.email || !formData.password ||   formData.fullName.firstName.length <= 2 || formData.fullName.lastName.length <= 1}
                     >
                         Register
                     </button>
                 </div>
 
 
-                <div className='flex justify-between mt-5'>
-                    <span className='w-[45%]'></span>
-                    <span> OR </span>
-                    <span className='w-[45%]' > </span>
+                <div className='flex justify-center w-full items-center mt-5'>
+                    <span className='text-xs' > OR </span>
                 </div>
-                <div className='w-full gap-9 justify-center flex items-center py-4'>
+                <div className='w-full gap-9 justify-center flex items-center py-2'>
                     <Link className='text-xs text-[#1d4ed8]'><img src={google} alt="Arrow Icon" className="ml-1 w-8 h-8" /> </Link>
                     <Link className='text-xs text-[#1d4ed8]'><img src={github} alt="Arrow Icon" className="ml-1 w-8 h-8" /> </Link>
                 </div>
